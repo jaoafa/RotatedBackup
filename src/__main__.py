@@ -82,6 +82,7 @@ def main():
 
 if __name__ == "__main__":
     if not os.path.exists("config.json"):
+        print("[ERROR] config.json not found")
         exit(1)
 
     config = Config("config.json")
