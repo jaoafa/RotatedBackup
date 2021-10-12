@@ -11,11 +11,14 @@ import tarfile
 
 from mcstatus import MinecraftServer
 
-from src import get_today_login_count
+from src import convert_size, get_today_login_count, send_to_discord
 from src.config import Config
 
 
 def main():
+    """
+    Main
+    """
     log_dir = "/home/server/minecraft/logs/"
     if config.log_dir_path:
         log_dir = os.path.abspath(config.log_dir_path)
@@ -63,6 +66,11 @@ def main():
 
         with tarfile.open(os.path.join(backup_world_path, datetime.datetime.now().strftime("%Y-%m-%d_%H-%M") + ".tar.gz"), "w:gz") as t:
             t.add(world_path)
+
+        filesize = os.path.getsize(os.path.join(backup_world_path, datetime.datetime.now().strftime("%Y-%m-%d_%H-%M") + ".tar.gz"))
+
+        print("[INFO] Backup successfully")
+        send_to_discord(config.discord_token, config.discord_channel, ":white_check_mark:ワールド「%s」のローテートバックアップが完了しました。(サイズ: %s)" % (world, convert_size(filesize)))
 
 
 if __name__ == "__main__":

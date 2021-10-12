@@ -1,6 +1,10 @@
 import datetime
 import gzip
+import json
+import math
 import os
+
+import requests
 
 
 def get_login_count(filepath: str) -> int:
@@ -36,3 +40,43 @@ def get_today_login_count(logfiles_path: str) -> int:
     login_count += get_login_count(os.path.join(logfiles_path, "latest.log"))
 
     return login_count
+
+
+def send_to_discord(token,
+                    channelId,
+                    message,
+                    embed=None,
+                    files=None):
+    """
+    Discordにメッセージを送信します。
+    """
+    if files is None:
+        files = {}
+    headers = {
+        "Authorization": "Bot {token}".format(token=token),
+        "User-Agent": "Bot"
+    }
+    params = {
+        "payload_json": json.dumps({
+            "content": message,
+            "embed": embed
+        })
+    }
+    response = requests.post(
+        "https://discord.com/api/channels/{channelId}/messages".format(channelId=channelId), headers=headers,
+        data=params, files=files)
+    print(response.status_code)
+    print(response.json())
+
+
+def convert_size(size_bytes):
+    """
+    bytesを人間が読みやすいサイズ表記に変えます
+    """
+    if size_bytes == 0:
+        return "0B"
+    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+    i = int(math.floor(math.log(size_bytes, 1024)))
+    p = math.pow(1024, i)
+    s = round(size_bytes / p, 2)
+    return "%s %s" % (s, size_name[i])
