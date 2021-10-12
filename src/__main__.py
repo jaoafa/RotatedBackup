@@ -63,14 +63,12 @@ def main():
         backup_world_path = os.path.join(config.out_path, world)
         if not os.path.exists(backup_world_path):
             os.mkdir(backup_world_path)
+        backup_file_path = os.path.join(backup_world_path, datetime.datetime.now().strftime("%Y-%m-%d_%H-%M") + ".tar.gz")
 
-        with tarfile.open(
-                os.path.join(backup_world_path, datetime.datetime.now().strftime("%Y-%m-%d_%H-%M") + ".tar.gz"),
-                "w:gz") as t:
+        with tarfile.open(backup_file_path, "w:gz") as t:
             t.add(world_path)
 
-        filesize = os.path.getsize(
-            os.path.join(backup_world_path, datetime.datetime.now().strftime("%Y-%m-%d_%H-%M") + ".tar.gz"))
+        filesize = os.path.getsize(backup_file_path)
 
         print("[INFO] Backup successfully")
         send_to_discord(config.discord_token, config.discord_channel,
