@@ -42,6 +42,25 @@ def get_today_login_count(logfiles_path: str) -> int:
     return login_count
 
 
+def delete_old_files(path: str):
+    """
+    古いファイルを削除します。
+    """
+    files = os.listdir(path)
+    files = [f for f in files if os.path.isfile(os.path.join(path, f))]
+    files = [f for f in files if f.endswith(".tar.gz")]
+    files = [f for f in files if len(f) == 23]
+
+    if len(files) < 24:
+        return
+    files.sort()
+
+    for file in files:
+        if len(files) < 24:
+            return
+        os.unlink(os.path.join(path, file))
+
+
 def send_to_discord(token,
                     channelId,
                     message,

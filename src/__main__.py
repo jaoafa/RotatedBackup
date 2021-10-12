@@ -11,7 +11,7 @@ import tarfile
 
 from mcstatus import MinecraftServer
 
-from src import convert_size, get_today_login_count, send_to_discord
+from src import convert_size, delete_old_files, get_today_login_count, send_to_discord
 from src.config import Config
 
 
@@ -64,13 +64,20 @@ def main():
         if not os.path.exists(backup_world_path):
             os.mkdir(backup_world_path)
 
-        with tarfile.open(os.path.join(backup_world_path, datetime.datetime.now().strftime("%Y-%m-%d_%H-%M") + ".tar.gz"), "w:gz") as t:
+        with tarfile.open(
+                os.path.join(backup_world_path, datetime.datetime.now().strftime("%Y-%m-%d_%H-%M") + ".tar.gz"),
+                "w:gz") as t:
             t.add(world_path)
 
-        filesize = os.path.getsize(os.path.join(backup_world_path, datetime.datetime.now().strftime("%Y-%m-%d_%H-%M") + ".tar.gz"))
+        filesize = os.path.getsize(
+            os.path.join(backup_world_path, datetime.datetime.now().strftime("%Y-%m-%d_%H-%M") + ".tar.gz"))
 
         print("[INFO] Backup successfully")
-        send_to_discord(config.discord_token, config.discord_channel, ":white_check_mark:ワールド「%s」のローテートバックアップが完了しました。(サイズ: %s)" % (world, convert_size(filesize)))
+        send_to_discord(config.discord_token, config.discord_channel,
+                        ":white_check_mark:ワールド「%s」のローテートバックアップが完了しました。(サイズ: %s)" % (world, convert_size(filesize)))
+
+        print("[INFO] Delete old backup files")
+        delete_old_files(backup_world_path)
 
 
 if __name__ == "__main__":
