@@ -71,8 +71,8 @@ def main():
         filesize = os.path.getsize(backup_file_path)
 
         print("[INFO] Backup successfully")
-        send_to_discord(config.discord_token, config.discord_channel,
-                        ":white_check_mark:ワールド「%s」のローテートバックアップが完了しました。(サイズ: %s)" % (world, convert_size(filesize)))
+        # send_to_discord(config.discord_token, config.discord_channel,
+        #                 ":white_check_mark:ワールド「%s」のローテートバックアップが完了しました。(サイズ: %s)" % (world, convert_size(filesize)))
 
         print("[INFO] Delete old backup files")
         delete_old_files(backup_world_path)
